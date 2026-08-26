@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momento de Paz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;600&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --text-primary: #2c3e50;
+            --text-secondary: #4a5568;
+            --btn-bg: rgba(255, 255, 255, 0.8);
+            --btn-border: #d1d9e6;
+            --item-bg: rgba(255, 255, 255, 0.7);
+            --item-border: #e2e8f0;
+            --accent: #667eea;
+            --accent-hover: #5a67d8;
+            --danger: #e53e3e;
+            --highlight-bg: rgba(102, 126, 234, 0.25);
+            --highlight-text: #4c51bf;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%);
+            --card-bg: rgba(30, 30, 50, 0.7);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --btn-bg: rgba(50, 50, 80, 0.6);
+            --btn-border: rgba(255,255,255,0.1);
+            --item-bg: rgba(40, 40, 65, 0.7);
+            --item-border: rgba(255,255,255,0.08);
+            --accent: #818cf8;
+            --accent-hover: #6366f1;
+            --danger: #fc8181;
+            --highlight-bg: rgba(129, 140, 248, 0.3);
+            --highlight-text: #a5b4fc;
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            transition: background 1.5s ease, color 0.5s ease;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            padding: 10px 15px;
+            font-size: 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: var(--card-bg);
+        }
+        
+        .primary-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+        }
+        
+        .primary-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        h1, h2 {
+            font-family: 'Lora', serif;
+            font-weight: 400;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .section.active { display: block; opacity: 1; }
+
+        .prayer-text {
+            font-family: 'Lora', serif;
+            font-size: 19px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .word { transition: all 0.2s ease; border-radius: 3px; }
+        .word.active {
+            background-color: var(--highlight-bg);
+            color: var(--highlight-text);
+            padding: 2px 4px;
+        }
+
+        .breath-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--item-bg);
+            margin: 0 auto 20px;
+            animation: breathe 8s infinite ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
+            color: var(--text-secondary);
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-box {
+            background: var(--item-bg);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid var(--item-border);
+        }
+        .stat-value { font-size: 24px; font-weight: bold; color: var(--accent); }
+        .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        .history-item {
+            background: var(--item-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--item-border);
+            position: relative;
+        }
+
+        .history-date { font-size: 12px; opacity: 0.7; margin-bottom: 5px; }
+        .history-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        /* Sentiment bars */
+        .sentiment-bars { margin: 20px 0; }
+        .bar-row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
+        .bar-label { width: 90px; text-align: right; font-size: 12px; }
+        .bar-track { flex: 1; height: 8px; background: var(--item-border); border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.5s ease; }
+        .bar-count { width: 30px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-controls">
+            <button id="theme-btn" onclick="toggleTheme()" title="Modo Escuro">🌙</button>
+            <button onclick="showSection('history-section')" title="Histórico e Estatísticas">📊</button>
+        </div>
+
+        <!-- TELA INICIAL -->
+        <div id="home-section" class="section active">
+            <h1>Como você está se sentindo hoje?</h1>
+            <div class="options">
+                <button onclick="startExperience('afastado')">😔 Afastado</button>
+                <button onclick="startExperience('proximo')">🙏 Próximo</button>
+                <button onclick="startExperience('necessidade')">🆘 Em necessidade</button>
+                <button onclick="startExperience('grato')">🙏 Grato</button>
+                <button onclick="startExperience('perdido')">迷失 Perdido</button>
+                <button onclick="startExperience('paz')">☮️ Em paz</button>
+            </div>
+        </div>
+
+        <!-- TELA DE ORAÇÃO -->
+        <div id="prayer-section" class="section">
+            <div class="breath-circle">Respira</div>
+            
+            <div class="controls-row">
+                <button id="music-btn" onclick="toggleMusic()">🎵 Som: OFF</button>
+                <button id="tts-btn" class="primary-btn" onclick="toggleSpeech()">▶️ Ouvir Reflexão</button>
+                <select id="voice-select"></select>
+                <select id="speed-select">
+                    <option value="0.8">Lento</option>
+                    <option value="1.0" selected>Normal</option>
+                    <option value="1.2">Rápido</option>
+                </select>
+            </div>
+
+            <div id="prayer-content" class="prayer-text"></div>
+            
+            <div class="controls-row" style="margin-top: 30px;">
+                <button onclick="saveReflection()" class="primary-btn">💾 Salvar no Histórico</button>
+                <button onclick="showSection('home-section')">Voltar</button>
+            </div>
+        </div>
+
+        <!-- TELA DE HISTÓRICO -->
+        <div id="history-section" class="section">
+            <h2>Sua Jornada</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div id="stat-total" class="stat-value">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-box">
+                    <div id="stat-streak" class="stat-value">0</div>
+                    <div class="stat-label">Dias Seguidos</div>
+                </div>
+                <div class="stat-box">
+                    <div id="stat-month" class="stat-value">0</div>
+                    <div class="stat-label">Este Mês</div>
+                </div>
+            </div>
+
+            <div id="sentiment-bars" class="sentiment-bars"></div>
+            <div id="history-list" class="history-list"></div>
+            
+            <div class="controls-row">
+                <button onclick="clearHistory()" style="color: var(--danger); border-color: var(--danger);">🗑️ Limpar Tudo</button>
+                <button onclick="showSection('home-section')" class="primary-btn">Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ TEXTOS PROFUNDOS ============
+        const prayerTexts = {
+            afastado: [
+                "Há momentos em que a vida parece um eco distante, e nós, caminhantes exilados de nosso próprio coração. Essa distância não é um castigo, mas o silêncio misterioso que antecede o reencontro. O oceano não perde sua imensidão quando a onda recua; ele apenas respira.",
+                "Sinta a sua própria presença agora. O afastamento é apenas a mente tentando medir o incomensurável. Volte para o centro do seu peito. A centelha que você procura nunca saiu de você, ela apenas aguardava a sua atenção repousar.",
+                "Não tente atravessar pontes longas para chegar a si mesmo. O caminho de volta é feito em um único passo, na profundidade de um único suspiro. Aceite este momento de vazio, pois é apenas na vastidão do vazio que o ser verdadeiro pode, finalmente, ancorar."
+            ],
+            proximo: [
+                "Sinto o pulso da vida não apenas ao meu redor, mas tecendo a própria fibra de quem sou. Não há fronteira entre o ar que respiro e o mistério que sustenta as estrelas. Tudo é uma única e contínua canção silenciosa, ecoando no eterno agora.",
+                "Nesta clareza, percebo que não estou meramente no mundo; eu sou uma expressão do mundo despertando para si mesmo. As antigas paredes da separação ruíram. O que antes eu chamava de 'eu' é agora apenas a gota consciente de um oceano infinito.",
+                "Permaneço aqui, banhado nesta comunhão intemporal. Que este instante de lucidez penetre em todas as minhas células, lembrando-me de que o divino não é um destino distante, mas o próprio chão onde piso quando caminho com o coração desperto."
+            ],
+            necessidade: [
+                "A dor e a dificuldade muitas vezes agem como o martelo invisível que rompe a casca da nossa semente, permitindo que algo mais verdadeiro possa brotar. Neste momento de fragilidade, reconheço que não preciso ser inquebrável. A força mais genuína nasce da coragem de abraçar a própria vulnerabilidade.",
+                "Deixo cair as armaduras que pesam sobre a minha alma. O universo não exige a minha perfeição, exige apenas a minha presença crua. Entrego o peso ardente do que não posso controlar aos braços sábios do tempo, que movem as estações sem pressa.",
+                "Que eu possa encontrar luz não fugindo da escuridão, mas permitindo que meus olhos se ajustem a ela. Nas sombras mais densas, as raízes encontram sua água mais pura. Confio na inteligência da vida que, mesmo sob o inverno mais duro, prepara em segredo a primavera."
+            ],
+            grato: [
+                "A gratidão é o estado de elevação de quem percebeu o milagre absurdo escondido na simplicidade do existir. Não agradeço apenas pela ausência de dor, mas pela própria capacidade de sentir, de estar vivo, de ser uma testemunha consciente deste vasto teatro cósmico.",
+                "Meu coração se expande não por aquilo que possuo, mas porque reconheço que cada fôlego é um empréstimo sagrado. A intrincada teia da vida me sustenta, desde a terra silenciosa sob meus pés até as conexões invisíveis com todos os seres que moldam o meu destino.",
+                "Reverencio a dança fluida das perdas e dos ganhos, sabendo que tudo obedece a um ritmo maior. Nesta gratidão incondicional, o medo se dissolve. Não peço mais nada à existência; apenas reverencio o privilégio inestimável de ser os olhos pelos quais o universo contempla a si mesmo."
+            ],
+            perdido: [
+                "Estar perdido não é um erro na jornada, mas a sagrada oportunidade de descobrir terras e mares para os quais não havia mapas. Quando a bússola da razão e da rotina falha, a alma é forçada a despertar a sua própria navegação interior.",
+                "Acolho o nevoeiro e a incerteza. Não preciso ver o horizonte final para dar o próximo passo com gentileza e integridade. O mistério não é um inimigo a ser decifrado, mas um oceano profundo que pede apenas que eu flutue com confiança, sem me debater contra a correnteza.",
+                "É no desencontro absoluto que nos despimos das ilusões de quem achávamos que deveríamos ser. Confio no chão que não vejo, confio no tempo que tece em segredo. Sei que, no grande labirinto do existir, mesmo quem caminha sem direção certa está sendo guiado invisivelmente de volta para casa."
+            ],
+            paz: [
+                "Há um lugar dentro de mim que nenhuma tempestade alcança, um santuário intocável de quietude. Aqui, os ponteiros do relógio desmancham-se, e o tumulto do mundo lá fora soa apenas como folhas secas sendo levadas por um vento muito distante.",
+                "Nesta paz insondável, não há nada a defender, ninguém a impressionar e nada a provar. Sou apenas o silêncio vivo, preenchido de pura e serena presença. A mente, que antes era um mar revolto, agora repousa como um lago espelhado, refletindo a imensidão do céu noturno.",
+                "Repouso, enfim, no colo da eternidade que habita o centro do agora. Deixo que esta tranquilidade irradie e seja a âncora da minha alma. Compreendo, sem o uso de palavras, que a verdadeira paz não é a ausência de caos lá fora, mas o enraizamento profundo da serenidade aqui dentro."
+            ]
+        };
+
+        const stateNames = {
+            afastado: 'Afastado', proximo: 'Próximo', necessidade: 'Em necessidade',
+            grato: 'Grato', perdido: 'Perdido', paz: 'Em paz'
+        };
+
+        let currentState = '';
+        let currentText = '';
+        
+        // ============ NAVEGAÇÃO ============
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'history-section') renderHistory();
+            if(id !== 'prayer-section') stopSpeech();
+        }
+
+        function startExperience(state) {
+            currentState = state;
+            const paragraphs = prayerTexts[state];
+            currentText = paragraphs.join(' ');
+            
+            const contentDiv = document.getElementById('prayer-content');
+            contentDiv.innerHTML = '';
+            
+            paragraphs.forEach((p, index) => {
+                const pElem = document.createElement('p');
+                pElem.style.marginBottom = "15px";
+                const words = p.split(' ');
+                words.forEach((word, wIndex) => {
+                    const span = document.createElement('span');
+                    span.className = 'word';
+                    span.id = `w_${index}_${wIndex}`;
+                    span.innerText = word + ' ';
+                    pElem.appendChild(span);
+                });
+                contentDiv.appendChild(pElem);
+            });
+
+            showSection('prayer-section');
+        }
+
+        // ============ TEMA ============
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-btn').innerText = isDark ? '🌙' : '☀️';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        if(localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-btn').innerText = '☀️';
+        }
+
+        // ============ ÁUDIO AMBIENTE ============
+        let audioCtx, rainNode, pianoInterval;
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const btn = document.getElementById('music-btn');
+            
+            if (isMusicPlaying) {
+                if(rainNode) rainNode.disconnect();
+                clearInterval(pianoInterval);
+                btn.innerText = '🎵 Som: OFF';
+                isMusicPlaying = false;
+            } else {
+                startRain();
+                startPiano();
+                btn.innerText = '🎵 Som: ON';
+                isMusicPlaying = true;
+            }
+        }
+
+        function startRain() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            
+            rainNode = audioCtx.createBufferSource();
+            rainNode.buffer = buffer;
+            rainNode.loop = true;
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 400;
+            
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.value = 0.1;
+            
+            rainNode.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            rainNode.start();
+        }
+
+        function startPiano() {
+            const notes = [261.63, 329.63, 392.00, 523.25];
+            pianoInterval = setInterval(() => {
+                if(Math.random() > 0.6) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 2);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 6);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 6);
+            }, 3000);
+        }
+
+        // ============ TEXT-TO-SPEECH ============
+        let synth = window.speechSynthesis;
+        let utterance = null;
+        let isSpeaking = false;
+
+        function populateVoices() {
+            let voices = synth.getVoices();
+            let select = document.getElementById('voice-select');
+            select.innerHTML = '';
+            let ptVoices = voices.filter(v => v.lang.includes('pt'));
+            let displayVoices = ptVoices.length > 0 ? ptVoices : voices;
+            displayVoices.forEach((voice, i) => {
+                let option = document.createElement('option');
+                option.textContent = voice.name;
+                option.value = i;
+                select.appendChild(option);
+            });
+        }
+        synth.onvoiceschanged = populateVoices;
+
+        function toggleSpeech() {
+            const btn = document.getElementById('tts-btn');
+            if (isSpeaking) {
+                synth.cancel();
+                isSpeaking = false;
+                btn.innerText = '▶️ Ouvir Reflexão';
+                clearHighlights();
+                return;
+            }
+
+            utterance = new SpeechSynthesisUtterance(currentText);
+            let voices = synth.getVoices().filter(v => v.lang.includes('pt'));
+            if(voices.length === 0) voices = synth.getVoices();
+            let selectedVoiceIndex = document.getElementById('voice-select').value;
+            if (voices[selectedVoiceIndex]) utterance.voice = voices[selectedVoiceIndex];
+            utterance.rate = parseFloat(document.getElementById('speed-select').value);
+
+            let allSpans = Array.from(document.querySelectorAll('.word'));
+            let wordIndex = 0;
+
+            utterance.onboundary = function(event) {
+                if(event.name === 'word') {
+                    clearHighlights();
+                    if(allSpans[wordIndex]) {
+                        allSpans[wordIndex].classList.add('active');
+                        wordIndex++;
+                    }
+                }
+            };
+
+            utterance.onend = function() {
+                isSpeaking = false;
+                btn.innerText = '▶️ Ouvir Reflexão';
+                clearHighlights();
+            };
+
+            synth.speak(utterance);
+            isSpeaking = true;
+            btn.innerText = '⏹️ Parar Leitura';
+        }
+
+        function stopSpeech() {
+            if(synth.speaking) synth.cancel();
+            isSpeaking = false;
+            document.getElementById('tts-btn').innerText = '▶️ Ouvir Reflexão';
+            clearHighlights();
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.word').forEach(span => span.classList.remove('active'));
+        }
+
+        // ============ HISTÓRICO E ESTATÍSTICAS ============
+        function saveReflection() {
+            let history = JSON.parse(localStorage.getItem('prayerHistory')) || [];
+            history.unshift({
+                id: Date.now(),
+                state: currentState,
+                date: new Date().toISOString(),
+                textSnippet: currentText.substring(0, 120) + '...'
+            });
+            localStorage.setItem('prayerHistory', JSON.stringify(history));
+            updateStreak();
+            alert('Reflexão salva com sucesso!');
+        }
+
+        function updateStreak() {
+            let lastDate = localStorage.getItem('lastPrayerDate');
+            let streak = parseInt(localStorage.getItem('prayerStreak')) || 0;
+            let today = new Date().toDateString();
+
+            if (lastDate !== today) {
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (lastDate === yesterday.toDateString()) streak++;
+                else streak = 1;
+                localStorage.setItem('prayerStreak', streak);
+                localStorage.setItem('lastPrayerDate', today);
+            }
+        }
+
+        function renderHistory() {
+            let history = JSON.parse(localStorage.getItem('prayerHistory')) || [];
+            let list = document.getElementById('history-list');
+            let barsDiv = document.getElementById('sentiment-bars');
+            list.innerHTML = '';
+            
+            document.getElementById('stat-total').innerText = history.length;
+            document.getElementById('stat-streak').innerText = localStorage.getItem('prayerStreak') || 0;
+            
+            let currentMonth = new Date().getMonth();
+            let monthCount = history.filter(h => new Date(h.date).getMonth() === currentMonth).length;
+            document.getElementById('stat-month').innerText = monthCount;
+
+            // Barras de sentimento
+            let counts = {};
+            history.forEach(h => { counts[h.state] = (counts[h.state] || 0) + 1; });
+            let maxCount = Math.max(...Object.values(counts), 1);
+            barsDiv.innerHTML = '';
+            Object.keys(stateNames).forEach(key => {
+                let count = counts[key] || 0;
+                let pct = (count / maxCount) * 100;
+                barsDiv.innerHTML += `
+                    <div class="bar-row">
+                        <div class="bar-label">${stateNames[key]}</div>
+                        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+                        <div class="bar-count">${count}</div>
+                    </div>`;
+            });
+
+            if (history.length === 0) {
+                list.innerHTML = '<p style="text-align:center; opacity:0.6;">Nenhuma reflexão salva ainda.</p>';
+                return;
+            }
+
+            history.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'history-item';
+                let dateStr = new Date(item.date).toLocaleString('pt-BR');
+                div.innerHTML = `
+                    <div class="history-date">${dateStr}</div>
+                    <div class="history-tag">${stateNames[item.state] || item.state}</div>
+                    <p style="font-size: 14px;">${item.textSnippet}</p>
+                    <button class="delete-btn" onclick="deleteItem(${item.id})">✕</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function deleteItem(id) {
+            let history = JSON.parse(localStorage.getItem('prayerHistory')) || [];
+            history = history.filter(item => item.id !== id);
+            localStorage.setItem('prayerHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function clearHistory() {
+            if(confirm('Tem certeza que deseja apagar todo o histórico?')) {
+                localStorage.removeItem('prayerHistory');
+                localStorage.removeItem('prayerStreak');
+                localStorage.removeItem('lastPrayerDate');
+                renderHistory();
+            }
+        }
+
+        setTimeout(populateVoices, 1000);
+    </script>
+</body>
+</html>
